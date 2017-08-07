@@ -4,6 +4,7 @@ import './App.css'
 const $ = window.$;
 
 import Shelf from "./components/Shelf";
+import SearchPage from "./components/SearchPage";
 
 // TODO: Remove this; Exposing currently for testing on browser console.
 window.BooksAPI = BooksAPI;
@@ -28,65 +29,6 @@ class BooksApp extends React.Component {
 			{title: "Read", list: []}
 		]
 	};
-
-	render() {
-
-		const bookShelfNodes = (() => {
-			return this.state.shelves.map((shelf, index) => {
-				return (<Shelf title={shelf.title}
-							   books={shelf.list}
-							   key={index}
-							   handleBookShelfChange={this.handleBookShelfChange}/>)
-			})
-		})();
-
-		const homePageNodes = (() => {
-			return (
-				<div className="list-books">
-					<div className="list-books-title">
-						<h1>MyReads</h1>
-					</div>
-					<div className="list-books-content">
-						<div>
-							{bookShelfNodes}
-						</div>
-					</div>
-					<div className="open-search">
-						<a onClick={() => this.setState({showSearchPage: true})}>Add a book</a>
-					</div>
-				</div>
-			)
-		})();
-
-		const searchPageNodes = (() => {
-			return (
-				<div className="search-books">
-					<div className="search-books-bar">
-						<a className="close-search" onClick={() => this.setState({showSearchPage: false})}>Close</a>
-						<div className="search-books-input-wrapper">
-							{/* 
-							 NOTES: The search from BooksAPI is limited to a particular set of search terms.
-							 You can find these search terms here:
-							 https://github.com/udacity/reactnd-project-myreads-starter/blob/master/SEARCH_TERMS.md
-
-							 However, remember that the BooksAPI.search method DOES search by title or author. So, don't worry if
-							 you don't find a specific author or title. Every search is limited by search terms.
-							 */}
-							<input type="text" placeholder="Search by title or author"/>
-						</div>
-					</div>
-					<div className="search-books-results">
-						<ol className="books-grid"></ol>
-					</div>
-				</div>)
-		})();
-
-		return (
-			<div className="app">
-				{this.state.showSearchPage ? searchPageNodes : homePageNodes}
-			</div>
-		)
-	}
 
 	putBooksOnShelves = (bookArray) => {
 
@@ -122,12 +64,12 @@ class BooksApp extends React.Component {
 
 	handleBookShelfChange = (bookID, selectedShelf) => {
 		let self = this;
-		
+
 		BooksAPI.update(bookID, selectedShelf).then(bookShelvesObject => {
-			
+
 			// The idea here is to transform the response object to a new updated books array,
 			// using the "allBooks" array that we saved on the first time the books were loaded.
-			
+
 			let updatedAllBooksArray = [];
 			$.each(bookShelvesObject, function(key, booksOnShelfArray) {
 				booksOnShelfArray.forEach(function(bookID, index) {
@@ -142,13 +84,58 @@ class BooksApp extends React.Component {
 					updatedAllBooksArray = updatedAllBooksArray.concat(updatedBooks)
 				})
 			});
-			
+
 
 			// Then we update the state of this book app with the updated books array
 			self.putBooksOnShelves(updatedAllBooksArray);
 		});
 
 	};
+
+	showSearchPage = () => {
+		this.setState({showSearchPage: true})
+	};
+
+	showHomePage = () => {
+		this.setState({showSearchPage: false})
+	};
+
+	render() {
+
+		const bookShelfNodes = (() => {
+			return this.state.shelves.map((shelf, index) => {
+				return (<Shelf title={shelf.title}
+							   books={shelf.list}
+							   key={index}
+							   handleBookShelfChange={this.handleBookShelfChange}/>)
+			})
+		})();
+
+		const homePageNodes = (() => {
+			return (
+				<div className="list-books">
+					<div className="list-books-title">
+						<h1>MyReads</h1>
+					</div>
+					<div className="list-books-content">
+						<div>
+							{bookShelfNodes}
+						</div>
+					</div>
+					<div className="open-search">
+						<a onClick={this.showSearchPage}>Add a book</a>
+					</div>
+				</div>
+			)
+		})();
+
+
+		return (
+			<div className="app">
+				{this.state.showSearchPage ? <SearchPage showHomePage={this.showHomePage}/> : homePageNodes}
+			</div>
+		)
+	}
 
 	componentDidMount() {
 		// Get all books after the component is mounted

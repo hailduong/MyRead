@@ -1,12 +1,17 @@
 import React from "react";
 import * as BooksAPI from '../BooksAPI';
-
+import PropTypes from "prop-types";
 const $ = window.$;
 
 class Book extends React.Component {
 
 	// TODO: add a placeholder for the image here
 	// TODO: transition between before and after the image is loaded
+	// TODO: propTypes
+	// static propTypes = {
+	// 	info: PropTypes.Object,
+	// 	handleBookShelfChange: PropTypes.func
+	// };
 
 	state = {
 		width: '100px',
@@ -26,7 +31,14 @@ class Book extends React.Component {
 			backgroundImage: `url(${bookInfo.imageLinks.thumbnail})`
 		};
 		const title = bookInfo.title;
-		const authors = bookInfo.authors.join(', ');
+		const authors = (() => {
+			if (typeof bookInfo.authors !== "undefined") {
+				return bookInfo.authors.join(', ');
+			}
+
+			return null
+
+		})();
 		const bookShelfChangerDefaultValue = bookInfo.shelf;
 
 		return (
