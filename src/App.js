@@ -1,10 +1,14 @@
 import React from 'react'
 import * as BooksAPI from './BooksAPI'
+import {BrowserRouter, Route} from 'react-router-dom'
+
 import './App.css'
+
 const $ = window.$;
 
-import Shelf from "./components/Shelf";
+import HomePage from "./components/HomePage";
 import SearchPage from "./components/SearchPage";
+
 
 // TODO: Remove this; Exposing currently for testing on browser console.
 window.BooksAPI = BooksAPI;
@@ -64,30 +68,8 @@ class BooksApp extends React.Component {
 
 	handleBookShelfChange = (bookID, selectedShelf) => {
 		let self = this;
-
-		BooksAPI.update(bookID, selectedShelf).then(bookShelvesObject => {
-
-			// The idea here is to transform the response object to a new updated books array,
-			// using the "allBooks" array that we saved on the first time the books were loaded.
-
-			let updatedAllBooksArray = [];
-			$.each(bookShelvesObject, function(key, booksOnShelfArray) {
-				booksOnShelfArray.forEach(function(bookID, index) {
-
-					let updatedBooks = self.allBooks
-						.filter(book => book.id === bookID)
-						.map(book => {
-							book.shelf = key;
-							return book
-						});
-
-					updatedAllBooksArray = updatedAllBooksArray.concat(updatedBooks)
-				})
-			});
-
-
-			// Then we update the state of this book app with the updated books array
-			self.putBooksOnShelves(updatedAllBooksArray);
+		BooksAPI.update(bookID, selectedShelf).then(() => {
+			self.getAllBooks();
 		});
 
 	};
@@ -102,37 +84,25 @@ class BooksApp extends React.Component {
 
 	render() {
 
-		const bookShelfNodes = (() => {
-			return this.state.shelves.map((shelf, index) => {
-				return (<Shelf title={shelf.title}
-							   books={shelf.list}
-							   key={index}
-							   handleBookShelfChange={this.handleBookShelfChange}/>)
-			})
-		})();
-
-		const homePageNodes = (() => {
-			return (
-				<div className="list-books">
-					<div className="list-books-title">
-						<h1>MyReads</h1>
-					</div>
-					<div className="list-books-content">
-						<div>
-							{bookShelfNodes}
-						</div>
-					</div>
-					<div className="open-search">
-						<a onClick={this.showSearchPage}>Add a book</a>
-					</div>
-				</div>
-			)
-		})();
-
-
 		return (
 			<div className="app">
-				{this.state.showSearchPage ? <SearchPage showHomePage={this.showHomePage}/> : homePageNodes}
+				<BrowserRouter>
+					<div>
+						<Route exact path="/"
+							   render={(props) => (
+								   <HomePage
+									   handleBookShelfChange={this.handleBookShelfChange}
+									   shelves={this.state.shelves}
+								   />
+							   )}
+						/>
+						<Route path="/search"
+							   render={(props) => (
+								   <SearchPage handleBookShelfChange={this.handleBookShelfChange}/>
+							   )}
+						/>
+					</div>
+				</BrowserRouter>
 			</div>
 		)
 	}

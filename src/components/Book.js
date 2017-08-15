@@ -1,5 +1,4 @@
 import React from "react";
-import * as BooksAPI from '../BooksAPI';
 import PropTypes from "prop-types";
 const $ = window.$;
 
@@ -39,7 +38,14 @@ class Book extends React.Component {
 			return null
 
 		})();
-		const bookShelfChangerDefaultValue = bookInfo.shelf;
+
+		const bookShelfChangerDefaultValue = (() => {
+			if (!!bookInfo.shelf) {
+				return bookInfo.shelf;
+			}
+
+			return "none";
+		})();
 
 		return (
 			<li>
@@ -52,6 +58,7 @@ class Book extends React.Component {
 								<option value="currentlyReading">Currently Reading</option>
 								<option value="wantToRead">Want to Read</option>
 								<option value="read">Read</option>
+								<option value="none">None</option>
 							</select>
 						</div>
 					</div>
@@ -72,7 +79,7 @@ class Book extends React.Component {
 	};
 
 	getThumbnailMeta() {
-		// TODO: get the natural widht/height of the image
+		// TODO: get the natural width/height of the image
 		// Use the above simply as: getThumbnailMeta( "http://example.com/img.jpg" );
 		let img = new Image();
 		img.addEventListener("load", function() {

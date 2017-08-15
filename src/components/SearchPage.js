@@ -1,6 +1,8 @@
 import React from "react";
+import {Link} from "react-router-dom";
 import Book from "./Book";
 import * as BooksAPI from '../BooksAPI';
+
 
 const $ = window.$;
 
@@ -52,21 +54,16 @@ class SearchPage extends React.Component {
 
 
 	};
-
-	moveBookToChosenShelf = () => {
-		console.log('Moved')
-	};
-
+	
 	render() {
-
-
+		
 		let bookSearchResultNodes = (() => {
 			let bookResult = this.state.bookResult;
 			if ($.isArray(bookResult)) {
 				return this.state.bookResult.map((book, index) => {
 						return (
 							<Book info={book} key={index}
-								  handleBookShelfChange={this.moveBookToChosenShelf}/>
+								  handleBookShelfChange={this.props.handleBookShelfChange}/>
 						)
 					}
 				);
@@ -77,7 +74,7 @@ class SearchPage extends React.Component {
 		return (
 			<div className="search-books">
 				<div className="search-books-bar">
-					<a className="close-search" onClick={this.props.showHomePage}>Close</a>
+					<Link className="close-search" to="/">Close</Link>
 					<div className="search-books-input-wrapper">
 						<input type="text"
 							   value={this.state.searchBoxValue}
