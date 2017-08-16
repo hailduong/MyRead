@@ -10,3 +10,7 @@ are displayed on the page, along with a control that lets you add the book to yo
    
 * To install, run `npm install`
 * To launch the app, run `npm start`
+
+### Screen Shot
+
+![Screenshot](./screenshot.png)
