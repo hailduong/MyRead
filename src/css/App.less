@@ -1,0 +1,228 @@
+html, body, .root{
+	height:100%;
+	background:#fafbfc;
+}
+body{
+	line-height:1.5;
+}
+body, .app{
+	background:white;
+}
+body, h1, h2{ font-family:'Open Sans', sans-serif; }
+/* main page */
+
+.list-books-title{
+	padding:10px 20px;
+	background:rgb(149, 117, 205);
+	text-align:left;
+	box-shadow:0 0 40px rgba(0, 0, 0, .5);
+}
+.list-books-title h1{
+	font-weight:400;
+	margin:0;
+	color:white;
+}
+.list-books-content{
+	padding:0 0 80px;
+	flex:1;
+}
+.bookshelf{
+	padding:0 10px 20px;
+}
+@media (min-width:600px){
+	.bookshelf{
+		padding:0 20px 40px;
+	}
+}
+.bookshelf-title{
+	border-bottom:1px solid #dedede;
+}
+.bookshelf-books{
+	text-align:center;
+}
+.open-search{
+	position:fixed;
+	right:25px;
+	bottom:25px;
+}
+.open-search a{
+	display:block;
+	width:50px;
+	height:50px;
+	border-radius:50%;
+	background:#6e38b6;
+	background-image:url('../icons/add.svg');
+	background-repeat:no-repeat;
+	background-position:center;
+	background-size:28px;
+	box-shadow:0 5px 20px 0 rgba(0, 0, 0, 0.2);
+	font-size:0;
+}
+/* search page */
+
+.search-books-bar{
+	position:fixed;
+	width:100%;
+	top:0;
+	left:0;
+	z-index:5;
+	display:flex;
+	box-shadow:0 10px 20px rgba(0, 0, 0, 0.19), 0 0 6px rgba(0, 0, 0, 0.23);
+}
+.search-books-input-wrapper{
+	flex:1;
+	background:#e9e;
+}
+.search-books-bar input{
+	width:100%;
+	padding:15px 10px;
+	font-size:1.25em;
+	border:none;
+	outline:none;
+}
+.close-search{
+	display:block;
+	top:20px;
+	left:15px;
+	width:50px;
+	height:53px;
+	background:white;
+	background-image:url('../icons/arrow-back.svg');
+	background-position:center;
+	background-repeat:no-repeat;
+	background-size:28px;
+	font-size:0;
+}
+.search-books-results{
+	padding:80px 10px 20px;
+}
+/* books grid */
+
+.books-grid{
+	list-style-type:none;
+	padding:0;
+	margin:0;
+	display:flex;
+	justify-content:center;
+	flex-wrap:wrap;
+}
+.books-grid li{
+	padding:10px 15px;
+	text-align:left;
+}
+.book{
+	width:200px; background:#fff; text-align:center; height:320px; border-radius:6px;
+	box-shadow:5px 5px 25px 0 rgba(46, 61, 73, 0.2);
+	.book-cover{
+		box-shadow:5px 5px 25px 0 rgba(46, 61, 73, 0.2);
+		border-radius:4px; background:#eee; margin:auto;
+	}
+	.book-cover-title{
+		padding:20px 10px 0;
+		text-align:center;
+		font-size:0.8em;
+	}
+}
+.book-title,
+.book-authors{
+	font-size:0.8em;
+	white-space:nowrap;
+	overflow:hidden;
+	text-overflow:ellipsis;
+	max-width:100%;
+	vertical-align:middle;
+	padding:0 20px;
+}
+.book-title{
+	margin-top:10px; font-weight:500; color:#666;
+}
+.book-authors{
+	color:#999;
+}
+.book-top{
+	position:relative;
+	padding-top:50px;
+	margin-bottom:20px;
+	display:flex;
+	align-items:flex-end;
+}
+.book-shelf-changer{
+	margin:auto; position:relative;
+	width:70px;
+	height:28px;
+	border-radius:14px;
+	background-color:#fff;
+	transition: background 0.3s, border 0.3s;
+	border:1px solid #d2b1ff;
+	background-repeat:no-repeat;
+	background-position:center;
+	background-size:20px; margin-top:10px;
+	span{ color:#d2b1ff;
+		font-weight:100;
+		font-size:12px;
+		position:relative;
+		transition: color 0.3s;
+		top:-1px; }
+	select{
+		position:absolute; top:0; left:0;
+		width:100%;
+		height:100%;
+		opacity:0;
+		cursor:pointer;
+	}
+	
+	&:hover{
+		background:#6e38b6; border-color:#6e38b6;
+		span{color:#fff;}
+	}
+}
+
+
+.spinner {
+	margin: 100px auto;
+	width: 40px;
+	height: 40px;
+	position: relative;
+	text-align: center;
+
+	-webkit-animation: sk-rotate 2.0s infinite linear;
+	animation: sk-rotate 2.0s infinite linear;
+}
+
+.dot1, .dot2 {
+	width: 60%;
+	height: 60%;
+	display: inline-block;
+	position: absolute;
+	top: 0;
+	background-color: #ccc;
+	border-radius: 100%;
+
+	-webkit-animation: sk-bounce 2.0s infinite ease-in-out;
+	animation: sk-bounce 2.0s infinite ease-in-out;
+}
+
+.dot2 {
+	top: auto;
+	bottom: 0;
+	-webkit-animation-delay: -1.0s;
+	animation-delay: -1.0s;
+}
+
+@-webkit-keyframes sk-rotate { 100% { -webkit-transform: rotate(360deg) }}
+@keyframes sk-rotate { 100% { transform: rotate(360deg); -webkit-transform: rotate(360deg) }}
+
+@-webkit-keyframes sk-bounce {
+	0%, 100% { -webkit-transform: scale(0.0) }
+	50% { -webkit-transform: scale(1.0) }
+}
+
+@keyframes sk-bounce {
+	0%, 100% {
+		transform: scale(0.0);
+		-webkit-transform: scale(0.0);
+	} 50% {
+		  transform: scale(1.0);
+		  -webkit-transform: scale(1.0);
+	  }
+}

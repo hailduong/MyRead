@@ -15,15 +15,16 @@ class HomePage extends React.Component {
 				return (<Shelf title={shelf.title}
 							   books={shelf.list}
 							   key={index}
+							   loading={this.props.loading}
 							   handleBookShelfChange={this.props.handleBookShelfChange}/>)
 			})
 		})();
 
 
 		return (
-			<div className="list-books">
+			<div className="list-books animated fadeIn">
 				<div className="list-books-title">
-					<h1>MyReads</h1>
+					<h1><i className="fa fa-book fa-fw"></i>MyReads</h1>
 				</div>
 				<div className="list-books-content">
 					<div>

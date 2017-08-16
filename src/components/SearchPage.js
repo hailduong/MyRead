@@ -9,26 +9,27 @@ const $ = window.$;
 class SearchPage extends React.Component {
 
 	// TODO: PropTypes
-	
+
 	constructor(props) {
 		super(props);
 	}
 
 	state = {
+		searching: false,
 		searchBoxValue: "",
 		bookResult: []
 	};
 
 
 	clearResult = () => {
-		this.setState({bookResult: []})
+		this.setState({bookResult: [], searching: false})
 	};
 
 	search = (keyword) => {
 		let self = this;
 		if (!!keyword) {
 			BooksAPI.search(keyword).then(function(books) {
-				self.setState({bookResult: books})
+				self.setState({bookResult: books, searching: false})
 			})
 		} else {
 			self.clearResult();
@@ -49,15 +50,18 @@ class SearchPage extends React.Component {
 		}
 
 		this.searchTimeout = setTimeout(function() {
+			self.setState({
+				searching: true
+			});
 			self.search(searchBoxValue)
 		}, 300);
 
 
 	};
-	
+
 	render() {
-		
-		let bookSearchResultNodes = (() => {
+
+		const bookSearchResultNodes = (() => {
 			let bookResult = this.state.bookResult;
 			if ($.isArray(bookResult)) {
 				return this.state.bookResult.map((book, index) => {
@@ -71,9 +75,18 @@ class SearchPage extends React.Component {
 			return null
 		})();
 
+		const loadingNode = (() => {
+			return (
+				<div className="spinner">
+					<div className="dot1"></div>
+					<div className="dot2"></div>
+				</div>
+			)
+		})();
+
 		return (
 			<div className="search-books">
-				<div className="search-books-bar">
+				<div className="search-books-bar animated fadeIn">
 					<Link className="close-search" to="/">Close</Link>
 					<div className="search-books-input-wrapper">
 						<input type="text"
@@ -84,7 +97,7 @@ class SearchPage extends React.Component {
 				</div>
 				<div className="search-books-results">
 					<ol className="books-grid">
-						{bookSearchResultNodes}
+						{this.state.searching ? loadingNode :bookSearchResultNodes}
 					</ol>
 				</div>
 			</div>

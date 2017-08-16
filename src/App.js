@@ -2,7 +2,8 @@ import React from 'react'
 import * as BooksAPI from './BooksAPI'
 import {BrowserRouter, Route} from 'react-router-dom'
 
-import './App.css'
+import './css/App.css';
+import './css/animate.css';
 
 const $ = window.$;
 
@@ -27,6 +28,7 @@ class BooksApp extends React.Component {
 		 * pages, as well as provide a good URL they can bookmark and share.
 		 */
 		showSearchPage: false,
+		loading:true,
 		shelves: [
 			{title: "Currently Reading", list: []},
 			{title: "Want to Read", list: []},
@@ -45,6 +47,7 @@ class BooksApp extends React.Component {
 		let readBooks = bookArray.filter(book => book.shelf === "read");
 
 		this.setState({
+			loading:false,
 			shelves: [
 				{title: "Currently Reading", list: readingBooks},
 				{title: "Want to Read", list: wantToReadBooks},
@@ -55,7 +58,6 @@ class BooksApp extends React.Component {
 
 	getAllBooks() {
 		let self = this;
-
 		// TODO: Remove this; Exposing currently for testing on browser console only.
 		window.bookApp = this;
 
@@ -68,6 +70,9 @@ class BooksApp extends React.Component {
 
 	handleBookShelfChange = (bookID, selectedShelf) => {
 		let self = this;
+		self.setState({
+			loading:true,
+		});
 		BooksAPI.update(bookID, selectedShelf).then(() => {
 			self.getAllBooks();
 		});
@@ -93,6 +98,7 @@ class BooksApp extends React.Component {
 								   <HomePage
 									   handleBookShelfChange={this.handleBookShelfChange}
 									   shelves={this.state.shelves}
+									   loading={this.state.loading}
 								   />
 							   )}
 						/>

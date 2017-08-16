@@ -11,7 +11,16 @@ class Shelf extends React.Component {
 
 		let self = this;
 
-		let bookNodes = (() => {
+		const loadingNode = (() => {
+			return (
+				<div className="spinner">
+					<div className="dot1"></div>
+					<div className="dot2"></div>
+				</div>
+			)
+		})();
+
+		const bookNodes = (() => {
 
 			if ($.isArray(self.props.books)) {
 				return self.props.books.map((book, index) => <Book info={book}
@@ -27,7 +36,7 @@ class Shelf extends React.Component {
 				<h2 className="bookshelf-title">{this.props.title}</h2>
 				<div className="bookshelf-books">
 					<ol className="books-grid">
-						{bookNodes}
+						{this.props.loading ? loadingNode : bookNodes}
 					</ol>
 				</div>
 			</div>

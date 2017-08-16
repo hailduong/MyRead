@@ -49,21 +49,22 @@ class Book extends React.Component {
 
 		return (
 			<li>
-				<div className="book">
+				<div className="book animated fadeIn">
 					<div className="book-top">
-						<div className="book-cover" style={bookStyle}></div>
-						<div className="book-shelf-changer">
-							<select defaultValue={bookShelfChangerDefaultValue} onChange={this.handleBookShelfChange}>
-								<option value="none" disabled>Move to...</option>
-								<option value="currentlyReading">Currently Reading</option>
-								<option value="wantToRead">Want to Read</option>
-								<option value="read">Read</option>
-								<option value="none">None</option>
-							</select>
-						</div>
+						<a href={bookInfo.previewLink} target="_blank" className="book-cover" style={bookStyle}></a>
 					</div>
 					<div className="book-title">{title}</div>
 					<div className="book-authors">{authors}</div>
+					<div className="book-shelf-changer">
+						<span>Move</span>
+						<select defaultValue={bookShelfChangerDefaultValue} onChange={this.handleBookShelfChange}>
+							<option value="none" disabled>Move to...</option>
+							<option value="currentlyReading">Currently Reading</option>
+							<option value="wantToRead">Want to Read</option>
+							<option value="read">Read</option>
+							<option value="none">None</option>
+						</select>
+					</div>
 				</div>
 			</li>
 		)
