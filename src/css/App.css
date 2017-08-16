@@ -8,7 +8,7 @@ body,h1,h2{font-family:'Open Sans',sans-serif}
 .bookshelf{padding:0 10px 20px}
 @media (min-width:600px){.bookshelf{padding:0 20px 40px}
 }
-.bookshelf-title{border-bottom:1px solid #dedede}
+.bookshelf-title{border-bottom:1px dashed #dedede}
 .bookshelf-books{text-align:center}
 .open-search{position:fixed;right:25px;bottom:25px}
 .open-search a{display:block;width:50px;height:50px;border-radius:50%;background:#6e38b6;background-image:url(../icons/add.svg);background-repeat:no-repeat;background-position:center;background-size:28px;box-shadow:0 5px 20px 0 rgba(0,0,0,.2);font-size:0}
