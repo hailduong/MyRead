@@ -13,4 +13,4 @@ are displayed on the page, along with a control that lets you add the book to yo
 
 ### Screen Shot
 
-![Screenshot](./screenshot.png)
+![Screenshot](./screenshot.jpg)

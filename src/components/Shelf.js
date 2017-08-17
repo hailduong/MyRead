@@ -1,6 +1,6 @@
 import React from "react";
 import Book from "./Book";
-const $ = window.$;
+import Loading from "./Loading";
 
 class Shelf extends React.Component {
 	constructor(props) {
@@ -9,34 +9,22 @@ class Shelf extends React.Component {
 
 	render() {
 
-		let self = this;
-
-		const loadingNode = (() => {
-			return (
-				<div className="spinner">
-					<div className="dot1"></div>
-					<div className="dot2"></div>
-				</div>
-			)
-		})();
-
 		const bookNodes = (() => {
-
-			if ($.isArray(self.props.books)) {
-				return self.props.books.map((book, index) => <Book info={book}
+			if (Array.isArray(this.props.books)) {
+				return this.props.books.map((book, index) => <Book info={book}
 																   key={index}
-																   handleBookShelfChange={self.props.handleBookShelfChange}/>);
+																   handleBookShelfChange={this.props.handleBookShelfChange}/>);
 			}
 
 			return null;
 		})();
-
+		
 		return (
 			<div className="bookshelf">
 				<h2 className="bookshelf-title">{this.props.title}</h2>
 				<div className="bookshelf-books">
 					<ol className="books-grid">
-						{this.props.loading ? loadingNode : bookNodes}
+						{this.props.loading ? <Loading/> : bookNodes}
 					</ol>
 				</div>
 			</div>

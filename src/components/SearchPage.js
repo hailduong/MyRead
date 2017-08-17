@@ -1,18 +1,10 @@
 import React from "react";
 import {Link} from "react-router-dom";
 import Book from "./Book";
+import Loading from "./Loading";
 import * as BooksAPI from '../BooksAPI';
 
-
-const $ = window.$;
-
 class SearchPage extends React.Component {
-
-	// TODO: PropTypes
-
-	constructor(props) {
-		super(props);
-	}
 
 	state = {
 		searching: false,
@@ -26,34 +18,45 @@ class SearchPage extends React.Component {
 	};
 
 	search = (keyword) => {
-		let self = this;
 		if (!!keyword) {
-			BooksAPI.search(keyword).then(function(books) {
-				self.setState({bookResult: books, searching: false})
+			BooksAPI.search(keyword).then((books) => {
+
+				// Check if any books in the search result already exists on the shelves.
+				// If it does, then update to show it's current shelf
+				if (Array.isArray(books)) {
+					const currentBookArray = this.props.bookArray;
+					currentBookArray.forEach((currentBook, index) => {
+						books.forEach((resultBook, index) => {
+							if (currentBook.id === resultBook.id) {
+								resultBook.shelf = currentBook.shelf;
+							}
+						})
+					});
+
+					this.setState({bookResult: books, searching: false})
+				} else {
+					this.clearResult()
+				}
+
 			})
 		} else {
-			self.clearResult();
+			this.clearResult();
 		}
 
 	};
 
 	handleSearchBoxChange = (event) => {
 
-		let self = this;
-		let searchBoxValue = $.trim(event.target.value);
+		const searchBoxValue = event.target.value.trim();
 		this.setState({searchBoxValue: searchBoxValue});
 
 		// If users type continuously, then do not search, 
 		// only search after user stop for a while.
-		if (typeof self.searchTimeout !== "undefined") {
-			clearTimeout(self.searchTimeout);
-		}
+		if (!!this.searchTimeout) clearTimeout(this.searchTimeout);
 
-		this.searchTimeout = setTimeout(function() {
-			self.setState({
-				searching: true
-			});
-			self.search(searchBoxValue)
+		this.searchTimeout = setTimeout(() => {
+			this.setState({searching: true});
+			this.search(searchBoxValue)
 		}, 300);
 
 
@@ -63,7 +66,7 @@ class SearchPage extends React.Component {
 
 		const bookSearchResultNodes = (() => {
 			let bookResult = this.state.bookResult;
-			if ($.isArray(bookResult)) {
+			if (Array.isArray(bookResult)) {
 				return this.state.bookResult.map((book, index) => {
 						return (
 							<Book info={book} key={index}
@@ -73,15 +76,6 @@ class SearchPage extends React.Component {
 				);
 			}
 			return null
-		})();
-
-		const loadingNode = (() => {
-			return (
-				<div className="spinner">
-					<div className="dot1"></div>
-					<div className="dot2"></div>
-				</div>
-			)
 		})();
 
 		return (
@@ -97,7 +91,7 @@ class SearchPage extends React.Component {
 				</div>
 				<div className="search-books-results">
 					<ol className="books-grid">
-						{this.state.searching ? loadingNode :bookSearchResultNodes}
+						{this.state.searching ? <Loading/> : bookSearchResultNodes}
 					</ol>
 				</div>
 			</div>

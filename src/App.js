@@ -1,76 +1,76 @@
 import React from 'react'
 import * as BooksAPI from './BooksAPI'
 import {BrowserRouter, Route} from 'react-router-dom'
+import HomePage from "./components/HomePage";
+import SearchPage from "./components/SearchPage";
 
 import './css/App.css';
 import './css/animate.css';
 
 const $ = window.$;
 
-import HomePage from "./components/HomePage";
-import SearchPage from "./components/SearchPage";
-
 class BooksApp extends React.Component {
-	
+
 	// TODO: Add "no book" state
 
 	state = {
 		showSearchPage: false,
-		loading:true,
-		shelves: [
-			{title: "Currently Reading", list: []},
-			{title: "Want to Read", list: []},
-			{title: "Read", list: []}
-		]
-	};
-
-	putBooksOnShelves = (bookArray) => {
-
-		// Save all these books for later use.
-		this.allBooks = bookArray;
-
-		// Transform this array and change it to component's state
-		let readingBooks = bookArray.filter(book => book.shelf === "currentlyReading");
-		let wantToReadBooks = bookArray.filter(book => book.shelf === "wantToRead");
-		let readBooks = bookArray.filter(book => book.shelf === "read");
-
-		this.setState({
-			loading:false,
-			shelves: [
-				{title: "Currently Reading", list: readingBooks},
-				{title: "Want to Read", list: wantToReadBooks},
-				{title: "Read", list: readBooks}
-			]
-		})
+		loading: true,
+		bookArray: []
 	};
 
 	getAllBooks() {
-		let self = this;
-
 		BooksAPI.getAll().then(bookArray => {
-
-			// Transform this book array to the component's state with "putBooksOnShelves"
-			self.putBooksOnShelves(bookArray)
+			this.setState({
+				bookArray: bookArray,
+				loading: false
+			});
 		})
 	}
 
-	handleBookShelfChange = (bookID, selectedShelf) => {
-		let self = this;
-		self.setState({
-			loading:true,
-		});
-		BooksAPI.update(bookID, selectedShelf).then(() => {
-			self.getAllBooks();
+	handleBookShelfChange = (bookObj, selectedShelf) => {
+
+		// Update to server the changes
+		this.setState({
+			loading: true
 		});
 
-	};
+		BooksAPI.update(bookObj, selectedShelf).then(() => {
+			let currentBookArray = this.state.bookArray;
+			let targetBookIndex = null;
+			const bookAlreadyOnShelf = currentBookArray.filter((book, index) => {
+					if (book.id === bookObj.id) {
+						targetBookIndex = index;
+						return book;
+					}
+				}).length > 0;
 
-	showSearchPage = () => {
-		this.setState({showSearchPage: true})
-	};
 
-	showHomePage = () => {
-		this.setState({showSearchPage: false})
+			const newBookArray = (() => {
+
+				let toBeUpdatedBookArray = currentBookArray;
+
+				if (bookAlreadyOnShelf) {
+					// Modify the current book if it already exists in the book list.
+					toBeUpdatedBookArray[targetBookIndex].shelf = selectedShelf;
+				} else {
+					// If the book does not exist, then append the new book to the current list
+					bookObj.shelf = selectedShelf;
+					toBeUpdatedBookArray.push(bookObj);
+				}
+
+				return toBeUpdatedBookArray;
+
+			})();
+
+
+			this.setState({
+				loading: false,
+				bookArray: newBookArray
+			});
+
+		});
+
 	};
 
 	render() {
@@ -83,14 +83,17 @@ class BooksApp extends React.Component {
 							   render={(props) => (
 								   <HomePage
 									   handleBookShelfChange={this.handleBookShelfChange}
-									   shelves={this.state.shelves}
+									   bookArray={this.state.bookArray}
 									   loading={this.state.loading}
 								   />
 							   )}
 						/>
 						<Route path="/search"
 							   render={(props) => (
-								   <SearchPage handleBookShelfChange={this.handleBookShelfChange}/>
+								   <SearchPage
+									   handleBookShelfChange={this.handleBookShelfChange}
+									   bookArray={this.state.bookArray}
+								   />
 							   )}
 						/>
 					</div>

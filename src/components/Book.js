@@ -1,51 +1,33 @@
 import React from "react";
-import PropTypes from "prop-types";
-const $ = window.$;
 
 class Book extends React.Component {
-
-	// TODO: add a placeholder for the image here
-	// TODO: transition between before and after the image is loaded
+	
 	// TODO: propTypes
 	// static propTypes = {
 	// 	info: PropTypes.Object,
 	// 	handleBookShelfChange: PropTypes.func
 	// };
 
-	state = {
-		width: '100px',
-		height: '140px',
-		backgroundSize: 'cover',
-		backgroundImage: null,
-	};
-
 	render() {
 
 		const bookInfo = this.props.info;
+
+		const imageLinks = !!bookInfo.imageLinks && !!bookInfo.imageLinks.thumbnail
+			? bookInfo.imageLinks.thumbnail
+			: "./images/no-cover-placeholder.png";
 
 		const bookStyle = {
 			width: '100px',
 			height: '140px',
 			backgroundSize: 'cover',
-			backgroundImage: `url(${bookInfo.imageLinks.thumbnail})`
+			backgroundImage: `url(${imageLinks})`
 		};
+
 		const title = bookInfo.title;
-		const authors = (() => {
-			if (typeof bookInfo.authors !== "undefined") {
-				return bookInfo.authors.join(', ');
-			}
 
-			return null
-
-		})();
-
-		const bookShelfChangerDefaultValue = (() => {
-			if (!!bookInfo.shelf) {
-				return bookInfo.shelf;
-			}
-
-			return "none";
-		})();
+		const authors = !!bookInfo.authors ? bookInfo.authors.join(', ') : "";
+		
+		const bookShelfChangerDefaultValue = !!bookInfo.shelf ? bookInfo.shelf : ""; 
 
 		return (
 			<li>
@@ -58,7 +40,7 @@ class Book extends React.Component {
 					<div className="book-shelf-changer">
 						<span>Move</span>
 						<select defaultValue={bookShelfChangerDefaultValue} onChange={this.handleBookShelfChange}>
-							<option value="none" disabled>Move to...</option>
+							<option value="" disabled>Move to...</option>
 							<option value="currentlyReading">Currently Reading</option>
 							<option value="wantToRead">Want to Read</option>
 							<option value="read">Read</option>
@@ -71,11 +53,8 @@ class Book extends React.Component {
 	}
 
 	handleBookShelfChange = (event) => {
-		let selectedShelf = $(event.target).val();
-		let bookID = this.props.info.id;
-		let bookObj = {
-			'id': bookID
-		};
+		const selectedShelf = event.target.value.trim();
+		const bookObj = this.props.info;
 		this.props.handleBookShelfChange(bookObj, selectedShelf)
 	};
 
